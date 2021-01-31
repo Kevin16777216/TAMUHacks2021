@@ -91,11 +91,14 @@ public class Instructions extends Scene{
     UI = new GameLayer(this);
     renderMap.add(Background);
     renderMap.add(UI);
-    SelectionButton Lobby = new SelectionButton(1920/2-700/2,200);
-    Lobby.setButtonSprite("Assets/back_to_menu.jpg",700,150);
-    Lobby.setAction(1);
-    UI.addDirect(Lobby);
-    
+    //test
+    SelectionButton instruction = new SelectionButton(0,0,1920,1080);
+    instruction.setButtonSprite("Assets/instruction_image.jpg");
+    instruction.setAction(1);
+    //SelectionButton Lobby = new SelectionButton(1920/2-700/2,200);
+    //Lobby.setButtonSprite("Assets/back_to_menu.jpg",700,150);
+    //Lobby.setAction(1);
+    UI.addDirect(instruction);
    }
   @Override
   int update(){
