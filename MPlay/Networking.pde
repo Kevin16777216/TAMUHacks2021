@@ -46,6 +46,14 @@ public class Networker{
     }catch(Exception e){
     }
   }
+  public void writeData(String data){
+    try{
+      out.writeUTF(data + "\t");
+      out.flush();
+    }catch(Exception e){
+      
+    }
+  }
   //Other Player's Sprite
   //Updates on solving a puzzle(add/removeObject)
   public boolean hasData(){
@@ -58,7 +66,8 @@ public class Networker{
   public String getRawData(){
     if(hasData()){
       try{
-        return in.readUTF();
+        String s= in.readUTF();
+        return s.substring(0,s.indexOf("\t"));
       }catch(Exception e){
         return null;
       }

@@ -7,6 +7,13 @@ public class LevelLoader extends Scene{
   PVector origin;
   HashMap<Integer,GameObject> ObjSystem;
   public LevelLoader(String input){
+    if(network!=null){
+      if(network.isServer){
+        network.writeData("LEVEL"+input);
+      }else{
+        input = network.getRawData();
+      }
+    }
     ObjSystem = new HashMap<Integer,GameObject>();
     TileLayer = new GameLayer(this);
     PlayerLayer = new GameLayer(this);
