@@ -60,6 +60,7 @@ public class Tile extends GameObject implements Physical{
       if(t.tags.contains(tag.BLACK))t.removeTag(tag.BLACK);
       if(getBaseTag()!=tag.TILE)removeTag(getBaseTag());
       if(tags.contains(tag.LINKTILE))removeTag(tag.LINKTILE);
+      if(tags.contains(tag.SOLID))removeTag(tag.SOLID);
       switch(t.id){
         case 8:
           tags.add(tag.SPAWN);
@@ -69,6 +70,7 @@ public class Tile extends GameObject implements Physical{
           break;
         case 10:
           tags.add(tag.DOOR);
+          tags.add(tag.SOLID);
           tags.add(tag.LINKTILE);
           break;
         case 11:
@@ -155,9 +157,10 @@ public class Tile extends GameObject implements Physical{
         break;
       case 10:
         tags.add(tag.DOOR);
+        tags.add(tag.SOLID);
         break;
       case 11:
-        tags.add(tag.DOOR);
+        tags.add(tag.PLATE);
         break;
       default:
         break;
@@ -289,7 +292,10 @@ public class Tile extends GameObject implements Physical{
          break;
       }
       if(subtiles[1]!=null){
-        subtiles[1].render();
+        subtiles[1].update();
+        if(subtiles[1]!=null){
+          subtiles[1].render();
+        }
       }
     }else if(loadMode.equals("GAME")){
     
@@ -317,6 +323,7 @@ public class Tile extends GameObject implements Physical{
 public class LinkedTile extends Tile{
   int linkedTile_1_uid = -1;
   int linkedTile_2_uid = -1;
+  Tile link_1,link_2;
   int people_required = 1;
   //Does this tile react to other tiles, or send a signal to a tile?
   boolean reciever = false;
@@ -331,14 +338,60 @@ public class LinkedTile extends Tile{
     this.showColor = showColor;
     tags.add(tag.LINKTILE);
   }
+   public LinkedTile(int x, int y, int id,int uid,boolean showColor,int link_1_id,int link_2_id){
+    super(x,y,id,uid);
+    this.showColor = showColor;
+    tags.add(tag.LINKTILE);
+    this.linkedTile_1_uid = link_1_id;
+    this.linkedTile_2_uid = link_2_id;
+  }
   public LinkedTile(int x, int y, int id,int uid){
     this(x,y,id,uid,false);
+  }
+  public void setupLink(){
+    //print(linkedTile_1_uid);
+    link_1=(Tile)((LevelLoader)sc).getUID(linkedTile_1_uid);
+    link_2=(Tile)((LevelLoader)sc).getUID(linkedTile_2_uid);
   }
   public void inc_time(){
     activate_time+=2;
   }
+  @Override
   int update(){
-    activate_time--;
+    if(activate_time> 0)activate_time--;
+    tag type = getBaseTag();
+    if(link_1 == null){
+      render();
+      return super.update();
+    }
+    switch(type){
+      case DOOR:
+        //print(((LinkedTile)(link_1.subtiles[1])).activated);
+        if(((LinkedTile)(link_1.subtiles[1])).activated && (link_2 == null || ((LinkedTile)(link_2.subtiles[1])).activated )){
+          Tile parent = (Tile)((LevelLoader)sc).getUID(uid);
+          parent.removeTag(tag.SOLID);
+          parent.removeTag(tag.DOOR);
+          parent.subtiles[1]=null;
+          //sc.remObj(this);
+          
+        }
+        break;
+      case PLATE:
+        HashSet<GameObject> player = sc.getObj(tag.PLAYER);
+        Player p = null;
+        if(player != null){
+          for(GameObject i: player){
+            p = (Player)i;
+            break;
+          }
+          activated = p.checkCol(this);
+          //print(activated);
+        }else{
+          activated = false;
+        }
+        break;
+      
+    }
     return super.update();
   }
   public void findLink(){
@@ -358,7 +411,7 @@ public class LinkedTile extends Tile{
            reciever = true;
            activated = false;
            for(GameObject i:pairs){
-             print(((Tile)i).getBaseTag());
+             //print(((Tile)i).getBaseTag());
              if(linkedTile_1_uid == -1 && ((Tile)i).getBaseTag() == tag.PLATE){
                linkedTile_1_uid =((Tile)i).uid;
              }else if(linkedTile_2_uid == -1 && ((Tile)i).getBaseTag() == tag.PLATE){

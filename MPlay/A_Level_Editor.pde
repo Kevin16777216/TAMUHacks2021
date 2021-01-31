@@ -126,6 +126,7 @@ public class EditorWindow extends UI{
             HashMap<Integer,Tile> col = Tiles.get(brushX);
             if(col.containsKey(brushY)){
               if(currentModifier!=0){
+                newTile.uid = col.get(brushY).uid;
                 if(col.get(brushY).subtiles[currentModifier] == null || col.get(brushY).subtiles[currentModifier].id != newTile.id){
                   HashSet<GameObject> list;
                   tag new_color;

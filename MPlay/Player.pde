@@ -23,6 +23,12 @@ public class Entity extends GameObject implements Physical{
   public Hitbox getHitbox(){
     return box;
   }
+  protected boolean checkCol(Physical Bx){
+    if(level == null)return false;
+    Hitbox testbox = new Hitbox(PVector.add(box.TR.copy(),PVector.mult(level.TileLayer.translation,-1)),box.Dimensions.copy());
+    if(Bx != null)if(testbox.isHit(Bx.getHitbox()))return true;
+    return false;
+  }
   protected boolean checkCol(HashSet<Physical> Boxes){
     if(Boxes != null)for(Physical i:Boxes)if(box.isHit(i.getHitbox()))return true;
     return false;
@@ -98,8 +104,15 @@ public class Player extends Entity{
             if(!justTeleport){
               justTeleport =true;
               teleportTime=100;
-              level.TileLayer.dragLayer(PVector.sub(portal.getHitbox().TR,otherPortal.getHitbox().TR));
-              level.TileLayer.setTranslation();
+              if(otherPortal!=null){
+                level.TileLayer.dragLayer(PVector.sub(portal.getHitbox().TR,otherPortal.getHitbox().TR));
+                level.TileLayer.setTranslation();
+              }else{
+                level.TileLayer.translation = new PVector(0,0);
+                level.TileLayer.PreviousTranslation = new PVector(0,0);
+                level.TileLayer.dragLayer(level.origin);
+                level.TileLayer.setTranslation();
+              }
             }
           }
         }

@@ -26,16 +26,7 @@ abstract class Scene {
       renderMap.get(i).drawLayer();
     }
   }
-  int update() {
-    int status = 0;
-    //remove old objects that were requested to be removed
-    while (!tbd.isEmpty()) {
-      GameObject tmp = tbd.remove();
-      objects.remove(tmp);
-      tmp.layer.remove(tmp);
-      for(tag i: tmp.getTags())objectMap.get(i).remove(tmp);
-    }
-    //add new objects requested to be added
+  void create(){
     while (!tbc.isEmpty()) {
       GameObject tmp = tbc.remove();
       if(tmp.sc == null){
@@ -49,6 +40,18 @@ abstract class Scene {
         objectMap.get(i).add(tmp);
       }
     }
+  }
+  int update() {
+    int status = 0;
+    //remove old objects that were requested to be removed
+    while (!tbd.isEmpty()) {
+      GameObject tmp = tbd.remove();
+      objects.remove(tmp);
+      tmp.layer.remove(tmp);
+      for(tag i: tmp.getTags())objectMap.get(i).remove(tmp);
+    }
+    //add new objects requested to be added
+    create();
     //update objects
     for(GameObject obj:objects){
       status = obj.update();

@@ -3,6 +3,7 @@ public class LevelLoader extends Scene{
   GameLayer PlayerLayer;
   GameLayer UI;
   Player p;
+  PVector origin;
   HashMap<Integer,GameObject> ObjSystem;
   public LevelLoader(String input){
     ObjSystem = new HashMap<Integer,GameObject>();
@@ -18,6 +19,17 @@ public class LevelLoader extends Scene{
       add = parseLine(lines[i]);
       if(add != null){
         TileLayer.addDirect(add);
+      }
+    }
+    create();
+    HashSet<GameObject> tiles = getObj(tag.LINKTILE);
+    if(tiles !=null){
+      for(GameObject i:tiles){
+          if(i instanceof LinkedTile){
+           ((LinkedTile)i).setupLink();
+          }else{
+           ((LinkedTile)((Tile)i).subtiles[1]).setupLink();
+          }
       }
     }
   }
@@ -43,7 +55,6 @@ public class LevelLoader extends Scene{
     if(link){
       linked_1 = int(data[start+10]);
       linked_2 = int(data[start+11]);
-      print(linked_1);
       if(data[start+9].equals("true")){
         showColor=true;
       }
@@ -56,12 +67,12 @@ public class LevelLoader extends Scene{
     }
     if(id == 2||id==10||id==11){
       //get extra
-      LinkedTile newTile = new LinkedTile(x,y,id,uid, showColor);
+      LinkedTile newTile = new LinkedTile(x,y,id,uid, showColor,linked_1,linked_2);
+      newTile.sc = this;
       newTile.w=w;
       newTile.h=h;
       newTile.tags.remove(tag.BLACK);
       newTile.tags.add(newTile.StrToTag(tg));
-      newTile.linkedTile_1_uid=linked_1;
       tag c =newTile.getColorTag();
       switch(c){
         case RED:
@@ -101,6 +112,7 @@ public class LevelLoader extends Scene{
         TileLayer.dragLayer(new PVector(-x+(1920/2-24),-y+(1080/2-24)));
         TileLayer.setTranslation();
         PlayerLayer.addDirect(p);
+        origin = new PVector(-x+(1920/2-24),-y+(1080/2-24));
         this.p = p;
       }else{
         

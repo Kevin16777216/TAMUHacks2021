@@ -15,7 +15,7 @@ void setup() {
 
 void draw() {
   long current = System.nanoTime();
-  //prntln("FPS: " +(int)(1E9/(current-previous)));
+  println("FPS: " +(int)(1E9/(current-previous)));
   previous = current;
   handle.update();
   handle.render();
