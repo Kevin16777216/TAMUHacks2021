@@ -9,7 +9,7 @@ SpriteLoader SpriteLoader;
 
 void setup() {
   size(1920,1080);
-  frameRate(60);
+  frameRate(240);
   SpriteLoader = new SpriteLoader();
   handle = new GameHandler();
   mono = createFont("Moon Light.otf", 32);

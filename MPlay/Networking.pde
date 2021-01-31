@@ -68,6 +68,7 @@ public class Networker{
   }
   public String getRawData(){
     if(hasData()){
+
       try{
         String s= in.readUTF();
         return s.substring(0,s.indexOf("\t"));

@@ -28,7 +28,9 @@ public class LevelLoader extends Scene{
     }
     Runnable thread = new Runnable(){
           public void run(){
-            getOtherPlayerData();
+            while(true){
+              getOtherPlayerData();
+            }
           }
     };
     Thread t = new Thread(thread);
@@ -183,20 +185,19 @@ public class LevelLoader extends Scene{
     return null;
   }
   public void renderOther(){
-    rect(-otherx,-othery,64,64);
-    println(otherx+","+othery);
+    rect(-otherx+(1920/2-24)+TileLayer.translation.x,-othery+(1080/2-24)+TileLayer.translation.y,64,64);
+    //println(otherx+","+othery);
   }
   public void getOtherPlayerData(){
     if(network!=null){
-      if(millis()%18==0){
+      if(millis()%10==0){
         String out = TileLayer.translation.x+","+TileLayer.translation.y;
         network.writeData(out+"\t");
       }
       String newPos = null;
-      while(newPos == null){
-        newPos = network.getRawData();
-      }
-      println("|",newPos+"|");
+      //println(network.hasData());
+      newPos = network.getRawData();
+      if(newPos == null)return;
       String[]meta;
       meta = newPos.split(",");
       otherx = int(meta[0]);
@@ -208,7 +209,7 @@ public class LevelLoader extends Scene{
   int update(){
     clear();
     int next = super.update();
-    getOtherPlayerData();
+    //getOtherPlayerData();
     //TileLayer.dragLayer(PVector.mult(getPlayer().velocity,-1));
     //TileLayer.setTranslation();
     return super.update();
