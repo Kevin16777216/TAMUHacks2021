@@ -26,6 +26,8 @@ public class Networker{
       exit();
     }
   }
+  //Other Player's Sprite
+  //Updates on solving a puzzle(add/removeObject)
   public boolean hasData(){
     try{
       return in.available()>0;

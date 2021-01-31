@@ -126,7 +126,6 @@ public class Player extends Entity{
       Hitbox testbox = new Hitbox(PVector.add(box.TR.copy(),PVector.mult(level.TileLayer.translation,-1)),box.Dimensions.copy());
       for(GameObject i:signs){
         if(testbox.isHit(((Physical)i).getHitbox()) && keys.isPressed('e') && !justTeleport){
-          print("swap");
           (((Tile)i).subtiles[1]).toggle=!(((Tile)i).subtiles[1]).toggle;
           teleportTime=100;
           justTeleport =true;
