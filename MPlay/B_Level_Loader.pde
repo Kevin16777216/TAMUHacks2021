@@ -21,7 +21,7 @@ public class LevelLoader extends Scene{
         while(input == null){
           input = network.getRawData();
         }
-        //println(input);
+       lines = input.split("\n");
       }
     }
     ObjSystem = new HashMap<Integer,GameObject>();
