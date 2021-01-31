@@ -73,7 +73,7 @@ public class Scene_Main_Menu extends Scene{
       case 5:
         return 5;
       case 6:
-        return 5;
+        return 6;
       default:
         return -1;
     }
