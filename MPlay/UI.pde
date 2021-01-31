@@ -226,6 +226,7 @@ public class menuCurtain extends UI{
   float prev_x = 0, prev_y = -40, x, y;
   float starty=-40, startyBack = 1120;
   boolean check;
+  float lx = 1920/2, rx=1920/2;
   
   //public menuCurtain(boolean check){
   //  this.check=check;
@@ -239,7 +240,7 @@ public class menuCurtain extends UI{
   
   int update(){
     //1076,1067
-    if(starty >= 1076.0){
+    if(lx <=0){
       
       HashSet<GameObject> UI = sc.getObj(tag.UI);
       for(GameObject i:UI){
@@ -259,6 +260,7 @@ public class menuCurtain extends UI{
     //draws individual line across screen using sin wave
     strokeWeight(8);
     for(int i=0; i<1920; i+=8) {
+      
       x = i;
       y = starty + 0.4*sin(a) * 40.0;
       line(prev_x, prev_y, x, y);
@@ -281,14 +283,18 @@ public class menuCurtain extends UI{
       for(int i=0;i<20;i++){
         //CurtainLine();
         noStroke();
-        fill(255);
-        rect(0,starty-5,1920,1080);
-        fill(201,241,255);
-        rect(0,starty,1920,1080);
-        a=0.0;
-        prev_x=0;
-        starty+=3;
-        prev_y += 3;
+        fill(174,213,227);
+        //fill(201,241,255);
+        rect(0,0,lx,1080);
+        //fill(201,241,255);
+        fill(174,213,227);
+        rect(rx,0,1920,1080);
+        lx-=3;
+        rx+=3;
+        //a=0.0;
+        //prev_x=0;
+        //starty+=3;
+        //prev_y += 3;
         
       }
     }
