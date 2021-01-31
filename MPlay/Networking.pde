@@ -15,18 +15,18 @@ public class Networker{
     try{
       if(isServer){
         server=new ServerSocket(65535);
-        Runnable thread = new Runnable(){
+      }else{
+        socket=new Socket(ip,65535);   
+        in=new DataInputStream(socket.getInputStream());
+        out=new DataOutputStream(socket.getOutputStream());
+      }
+      Runnable thread = new Runnable(){
           public void run(){
             block();
           }
         };
         Thread t = new Thread(thread);
         t.start();
-      }else{
-        socket=new Socket(ip,65535);   
-        in=new DataInputStream(socket.getInputStream());
-        out=new DataOutputStream(socket.getOutputStream());
-      }
     }catch(Exception e){
       System.out.println(e);
       exit();
@@ -34,12 +34,15 @@ public class Networker{
   }
   public void block(){
     try{
-      println("waiting");
-      socket=server.accept();
+      if(isServer){
+        socket=server.accept();
+        connected = true;
+        in=new DataInputStream(socket.getInputStream());
+        out=new DataOutputStream(socket.getOutputStream());
+      }else{
+        connected =hasData();
+      }
       
-      connected = true;
-      in=new DataInputStream(socket.getInputStream());
-      out=new DataOutputStream(socket.getOutputStream());
     }catch(Exception e){
     }
   }
