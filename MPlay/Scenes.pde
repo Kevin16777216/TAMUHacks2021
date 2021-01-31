@@ -25,31 +25,34 @@ public class Scene_Main_Menu extends Scene{
     //image.chooseImage("Assests/instructions.jpg");
     Background = new GameLayer(this);
     UI = new GameLayer(this);
+    Curtain = new GameLayer(this);
     renderMap.add(Background);
     renderMap.add(UI);
-    SelectionButton Lobby = new SelectionButton(1920/2-700/2,200);
-    Lobby.setButtonSprite("Assets/main_menu.jpg",700,150);
+    renderMap.add(Curtain);
+    SelectionButton Lobby = new SelectionButton(64,200,400,200);
+    Lobby.setButtonSprite("Assets/main_menu.jpg");
     Lobby.setAction(1);
-    SelectionButton Client = new SelectionButton(1920/2-700/2,500);
+    SelectionButton Client = new SelectionButton(64,500,400,200);
     Client.setAction(2);
-    Client.setButtonSprite("Assets/load_level.jpg",700,150);
-    SelectionButton Instructions = new SelectionButton(1920/2-700/2,800);
-    //SelectionButton Instructions = new SelectionButton(1920/2,100);
-    Instructions.setButtonSprite("Assets/instructions.jpg",700,150);
+    Client.setButtonSprite("Assets/load_level.jpg");
+    SelectionButton Instructions = new SelectionButton(64,800,400,200);
+    Instructions.setButtonSprite("Assets/instructions.jpg");
     Instructions.setAction(3);
-    SelectionButton EditLevel = new SelectionButton(1920-400,1080-150);
-    EditLevel.setButtonSprite("Assets/create_level.jpg",700,150);
+    SelectionButton EditLevel = new SelectionButton(660,1080-150,400,200);
+    EditLevel.setButtonSprite("Assets/create_level.jpg");
     Lobby.toggleUse();
     Client.toggleUse();
     Instructions.toggleUse();
     EditLevel.setAction(4);
     EditLevel.toggleUse();
     //UI.addDirect(Lobby,Client,Instructions,EditLevel,new Curtain(10));
-    UI.addDirect(Lobby,Client,Instructions,EditLevel,new menuCurtain());
+    UI.addDirect(Lobby,Client,Instructions,EditLevel);
+    Curtain.addDirect(new menuCurtain());
   }
   @Override
   int update(){
     clear();
+    background(201,241,255);
     return super.update();
   }
   protected int handleStatus(int status){

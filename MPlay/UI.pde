@@ -97,6 +97,9 @@ public class Button extends UI{
     button_img_x_offset = x_loc;
     button_img_y_offset = y_loc;
   }
+  void setButtonSprite(String img_name){
+    button_sprite = loadImage(img_name);
+  }
   
   int update(){
     int status = 0;
@@ -251,10 +254,12 @@ public class menuCurtain extends UI{
   }
   
   void CurtainLine(){
-    background(201,241,255);
+    //background(201,241,255);
     //println(starty);
     //draws individual line across screen using sin wave
-    for(int i=0; i<1920; i=i+4) {
+    strokeWeight(8);
+    for(int i=0; i<1920; i+=8) {
+      
       x = i;
       y = starty + 0.4*sin(a) * 40.0;
       line(prev_x, prev_y, x, y);
@@ -271,11 +276,16 @@ public class menuCurtain extends UI{
   }
   //irrelevent
   void render(){
-    
+    //background(201,241,255);
     if(starty<1080.0){
       //draws sets of lines
-      for(int i=0;i<10;i++){
-        CurtainLine();
+      for(int i=0;i<20;i++){
+        //CurtainLine();
+        noStroke();
+        fill(255);
+        rect(0,starty-5,1920,1080);
+        fill(201,241,255);
+        rect(0,starty,1920,1080);
         a=0.0;
         prev_x=0;
         starty+=3;

@@ -416,14 +416,11 @@ public class LinkedTile extends Tile{
     }
     switch(type){
       case DOOR:
-        //print(((LinkedTile)(link_1.subtiles[1])).activated);
         if(((LinkedTile)(link_1.subtiles[1])).activated && (link_2 == null || ((LinkedTile)(link_2.subtiles[1])).activated )){
           Tile parent = (Tile)((LevelLoader)sc).getUID(uid);
           parent.removeTag(tag.SOLID);
           parent.removeTag(tag.DOOR);
-          parent.subtiles[1]=null;
-          //sc.remObj(this);
-          
+          parent.subtiles[1]=null;   
         }
         break;
       case PLATE:
