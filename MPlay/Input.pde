@@ -6,7 +6,7 @@ public class KeyListener {
   private LinkedList<key> updateKeys = new LinkedList<key>();
 
   // List used to determine which keys are listened to.
-  private final int[] events = { UP, DOWN, LEFT, RIGHT,'w'-32,'a'-32,'s'-32,'d'-32,32};
+  private final int[] events = { UP, DOWN, LEFT, RIGHT,'w'-32,'a'-32,'s'-32,'d'-32,'e'-32,32};
   public KeyListener() {
     for(int i: events) {
       input.put(i,new key());

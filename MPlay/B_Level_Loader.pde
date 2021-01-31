@@ -3,6 +3,7 @@ public class LevelLoader extends Scene{
   GameLayer PlayerLayer;
   GameLayer UI;
   Player p;
+  Polygon Sign;
   PVector origin;
   HashMap<Integer,GameObject> ObjSystem;
   public LevelLoader(String input){
@@ -13,6 +14,8 @@ public class LevelLoader extends Scene{
     renderMap.add(TileLayer);
     renderMap.add(PlayerLayer);
     renderMap.add(UI);
+    Sign = new Polygon("Sign");
+    UI.addDirect(Sign);
     Tile add;
     String[] lines = loadStrings(input);
     for (int i = 0 ; i < lines.length; i++) {
@@ -32,6 +35,13 @@ public class LevelLoader extends Scene{
           }
       }
     }
+    //HashSet<GameObject> rtiles = getObj(tag.TILE);
+    //if(rtiles !=null){
+    //  for(GameObject i:rtiles){
+    //      i.layer = TileLayer;
+    //      if((Tile)i.)
+    //  }
+    //}
   }
   //fix
   public Tile parseLine(String line){
@@ -100,10 +110,15 @@ public class LevelLoader extends Scene{
         }
         next+=data[data.length-1];
         subTile = parseLine(next);
+        subTile.layer=TileLayer;
+        
       }
       Tile newTile = new Tile(x,y,w,h,id,uid,tg);
       ObjSystem.put(uid,newTile);
       if(subTile!=null){
+        if(subTile.id>11 && subTile.id<16){
+          subTile.decoration = Sign;
+        }
         newTile.setSubtile(subTile,1);
       }
       //newTile.subtiles[1]=subTile;
