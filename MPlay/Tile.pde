@@ -331,12 +331,13 @@ public class Tile extends GameObject implements Physical{
                decoration.sign[4].x = box.TR.x+w/2+layer.translation.x;
                decoration.sign[4].y = box.TR.y+h/4+layer.translation.y;
                fill(0);
-               decoration.text=texts[number];
+               decoration.text=texts[number-1];
                //text(texts[number],x,y,1920-60,420);
                //decoration.render();
              }
            //}
          //}
+         break;
        default:
          break;
       }
@@ -409,7 +410,7 @@ public class LinkedTile extends Tile{
   int update(){
     if(activate_time> 0)activate_time--;
     tag type = getBaseTag();
-    if(link_1 == null){
+    if(link_1 == null&&id!=2){
       render();
       return super.update();
     }
@@ -445,6 +446,7 @@ public class LinkedTile extends Tile{
   }
   public void findLink(){
     HashSet<GameObject> pairs = sc.getObj(getColorTag());
+    if(getColorTag() == tag.BLACK)return;
     if(pairs != null){
       switch(id){
         case 2:

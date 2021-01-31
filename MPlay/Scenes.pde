@@ -19,6 +19,7 @@ public class Scene_Main_Menu extends Scene{
   //Screen image;
   GameLayer Background;
   GameLayer UI;
+  GameLayer Curtain;
   public Scene_Main_Menu(){
     //image = new Screen(this);
     //image.chooseImage("Assests/instructions.jpg");

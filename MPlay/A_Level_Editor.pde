@@ -194,6 +194,7 @@ public class EditorWindow extends UI{
                 tileCounter++;
                 newTile.uid=tileCounter;
                 map.addDirect(newTile);
+                print("ey");
               }
             }
           }else{
