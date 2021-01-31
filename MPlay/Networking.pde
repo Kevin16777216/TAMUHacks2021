@@ -16,9 +16,6 @@ public class Networker{
       if(isServer){
         server=new ServerSocket(65535);
       }else{
-        socket=new Socket(ip,65535);   
-        in=new DataInputStream(socket.getInputStream());
-        out=new DataOutputStream(socket.getOutputStream());
       }
       Runnable thread = new Runnable(){
           public void run(){
@@ -40,7 +37,10 @@ public class Networker{
         in=new DataInputStream(socket.getInputStream());
         out=new DataOutputStream(socket.getOutputStream());
       }else{
-        connected =hasData();
+       socket=new Socket(publicIP,65535);   
+        in=new DataInputStream(socket.getInputStream());
+        out=new DataOutputStream(socket.getOutputStream());
+        connected =true;
       }
       
     }catch(Exception e){
