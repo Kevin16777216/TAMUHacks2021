@@ -38,8 +38,12 @@ public class LevelLoader extends Scene{
     boolean showColor=false;
     boolean reciever=false;
     boolean activated=false;
-    
+    int linked_1 = 0;
+    int linked_2 = 0;
     if(link){
+      linked_1 = int(data[start+10]);
+      linked_2 = int(data[start+11]);
+      print(linked_1);
       if(data[start+9].equals("true")){
         showColor=true;
       }
@@ -57,6 +61,7 @@ public class LevelLoader extends Scene{
       newTile.h=h;
       newTile.tags.remove(tag.BLACK);
       newTile.tags.add(newTile.StrToTag(tg));
+      newTile.linkedTile_1_uid=linked_1;
       tag c =newTile.getColorTag();
       switch(c){
         case RED:
@@ -117,7 +122,12 @@ public class LevelLoader extends Scene{
     return null;
   }
   public GameObject getUID(int uid){
-    return ObjSystem.get(uid);
+    for(GameObject i:objects){
+      if(i instanceof Tile){
+        if(((Tile)i).uid == uid)return i;
+      }
+    }
+    return null;
   }
   @Override
   int update(){

@@ -70,6 +70,8 @@ public class Entity extends GameObject implements Physical{
   }
 }
 public class Player extends Entity{
+  boolean justTeleport =false;
+  int teleportTime = 0;
   public Player(Hitbox box){
     super(box);
     tags.add(tag.PLAYER);
@@ -85,20 +87,26 @@ public class Player extends Entity{
     return checkEnv(exit);
   }
   private void checkTeleporters(){
-    //HashSet<GameObject> teleport = sc.getObj(tag.TELEPORT);
-    //Hitbox testbox = new Hitbox(PVector.add(box.TR.copy(),PVector.mult(sc.TileLayer.translation,-1)),box.Dimensions.copy());
-    //if(teleport != null){
-    //  for(GameObject i:teleport){
-    //    if(testbox.isHit(((Physical)i).getHitbox())){
-    //      LinkedTile portal = (LinkedTile)i;
-    //      LinkedTile otherPortal = (LinkedTile)sc.getUID(portal.linkedTile_1_uid);
-    //      if(keys.isHeld(' ')){
-    //        //sc.TileLayer.dragLayer(new PVector(otherPortal));
-    //        sc.TileLayer.setTranslation();
-    //      }
-    //    }
-    //  }
-    //}
+    HashSet<GameObject> teleport = sc.getObj(tag.TELEPORT);
+    Hitbox testbox = new Hitbox(PVector.add(box.TR.copy(),PVector.mult(level.TileLayer.translation,-1)),box.Dimensions.copy());
+    if(teleport != null){
+      for(GameObject i:teleport){
+        if(testbox.isHit(((Physical)i).getHitbox())){
+          LinkedTile portal = (LinkedTile)i;
+          LinkedTile otherPortal = (LinkedTile)level.getUID(portal.linkedTile_1_uid);
+          if(keys.isPressed(32)){
+            if(!justTeleport){
+              justTeleport =true;
+              teleportTime=100;
+              level.TileLayer.dragLayer(PVector.sub(portal.getHitbox().TR,otherPortal.getHitbox().TR));
+              level.TileLayer.setTranslation();
+            }
+          }
+        }
+      }
+    }
+    if(teleportTime >0)teleportTime--;
+    if(teleportTime ==0)justTeleport = false;
   }
   int update(){
     applyInput();

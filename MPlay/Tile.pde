@@ -325,6 +325,7 @@ public class LinkedTile extends Tile{
   boolean showColor=true;
   //showingColor:should the tile show it's color?(Changing this variable will change the color mid-game)
   boolean showingColor = true;
+  int activate_time = 0;
   public LinkedTile(int x, int y, int id,int uid,boolean showColor){
     super(x,y,id,uid);
     this.showColor = showColor;
@@ -332,6 +333,13 @@ public class LinkedTile extends Tile{
   }
   public LinkedTile(int x, int y, int id,int uid){
     this(x,y,id,uid,false);
+  }
+  public void inc_time(){
+    activate_time+=2;
+  }
+  int update(){
+    activate_time--;
+    return super.update();
   }
   public void findLink(){
     HashSet<GameObject> pairs = sc.getObj(getColorTag());
