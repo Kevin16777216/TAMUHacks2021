@@ -6,7 +6,7 @@ public class LevelLoader extends Scene{
   int otherx;
   int othery;
   Polygon Sign;
-  PVector origin;
+  PVector origin;Runnable thread;
   HashMap<Integer,GameObject> ObjSystem;
   public LevelLoader(String input){
     String[] lines = new String[]{};
@@ -26,6 +26,13 @@ public class LevelLoader extends Scene{
        lines = input.split("\n");
       }
     }
+    Runnable thread = new Runnable(){
+          public void run(){
+            getOtherPlayerData();
+          }
+    };
+    Thread t = new Thread(thread);
+    t.start();
     ObjSystem = new HashMap<Integer,GameObject>();
     TileLayer = new GameLayer(this);
     PlayerLayer = new GameLayer(this);
@@ -181,7 +188,7 @@ public class LevelLoader extends Scene{
   }
   public void getOtherPlayerData(){
     if(network!=null){
-      if(millis()%100==0){
+      if(millis()%18==0){
         String out = TileLayer.translation.x+","+TileLayer.translation.y;
         network.writeData(out+"\t");
       }

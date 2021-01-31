@@ -30,20 +30,23 @@ public class Networker{
     }
   }
   public void block(){
-    try{
-      if(isServer){
-        socket=server.accept();
-        connected = true;
-        in=new DataInputStream(socket.getInputStream());
-        out=new DataOutputStream(socket.getOutputStream());
-      }else{
-       socket=new Socket(publicIP,65535);   
-        in=new DataInputStream(socket.getInputStream());
-        out=new DataOutputStream(socket.getOutputStream());
-        connected =true;
+    while(!connected){
+      try{
+        if(isServer){
+          socket=server.accept();
+          connected = true;
+          in=new DataInputStream(socket.getInputStream());
+          out=new DataOutputStream(socket.getOutputStream());
+          
+        }else{
+         socket=new Socket(publicIP,65535);   
+          in=new DataInputStream(socket.getInputStream());
+          out=new DataOutputStream(socket.getOutputStream());
+          connected =true;
+        }
+        
+      }catch(Exception e){
       }
-      
-    }catch(Exception e){
     }
   }
   public void writeData(String data){
