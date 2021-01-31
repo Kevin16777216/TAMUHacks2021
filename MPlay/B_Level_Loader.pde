@@ -3,6 +3,8 @@ public class LevelLoader extends Scene{
   GameLayer PlayerLayer;
   GameLayer UI;
   Player p;
+  int otherx;
+  int othery;
   Polygon Sign;
   PVector origin;
   HashMap<Integer,GameObject> ObjSystem;
@@ -173,6 +175,24 @@ public class LevelLoader extends Scene{
     }
     return null;
   }
+  public void renderOther(){
+    rect(otherx,othery,64,64);
+  }
+  public void getOtherPlayerData(){
+    if(network!=null){
+      String out = TileLayer.translation.x+","+TileLayer.translation.y;
+      network.writeData(out+"\t");
+      String newPos = null;
+      while(input == null){
+        newPos = network.getRawData();
+      }
+      String[]meta;
+      meta = newPos.split(",");
+      otherx = int(meta[0]);
+      othery = int(meta[1]);
+      
+    }
+  }
   @Override
   int update(){
     clear();
@@ -180,6 +200,14 @@ public class LevelLoader extends Scene{
     //TileLayer.dragLayer(PVector.mult(getPlayer().velocity,-1));
     //TileLayer.setTranslation();
     return super.update();
+  }
+  @Override
+  void render(){
+    renderMap.get(0).drawLayer();
+    renderOther();
+    renderMap.get(1).drawLayer();
+    
+    renderMap.get(2).drawLayer();
   }
   protected int handleStatus(int status){
     switch(status){
