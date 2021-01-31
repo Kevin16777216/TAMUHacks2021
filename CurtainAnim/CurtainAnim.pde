@@ -32,12 +32,19 @@ void draw(){
 }
 
 void CurtainLine(){
+  //draws individual line across screen using sin wave
   for(int i=0; i<1280; i=i+4) {
     x = i;
-    y = starty + sin(a) * 40.0;
+    y = starty + 0.4*sin(a) * 40.0;
     line(prev_x, prev_y, x, y);
     prev_x = x;
     prev_y = y;
     a = a + inc;
+    if(a%TWO_PI>(PI/2) && a%TWO_PI<(3*PI/2)){
+      stroke(233, 88, 88);
+    }
+    else{
+      stroke(255, 112, 112);
+    }
   }
 }
