@@ -17,7 +17,7 @@ public class LevelLoader extends Scene{
   //fix
   public void parseLine(String line){
     if(line.length()<3)return;
-    line.substring(1,line.length()-1);
+    line.substring(2,line.length()-1);
     String[]data = line.split(",");
     println(data[0]);
     boolean link =data[0].equals("LINKED");
@@ -35,7 +35,7 @@ public class LevelLoader extends Scene{
       /////
       //TileLayer.addDirect(newTile);
     }else{
-      print(tag);
+      //print(tag);
       Tile newTile = new Tile(x,y,w,h,id,uid,tag);
       if(id == 8){
         //Make a new Player Object
