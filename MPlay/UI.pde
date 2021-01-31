@@ -259,7 +259,6 @@ public class menuCurtain extends UI{
     //draws individual line across screen using sin wave
     strokeWeight(8);
     for(int i=0; i<1920; i+=8) {
-      
       x = i;
       y = starty + 0.4*sin(a) * 40.0;
       line(prev_x, prev_y, x, y);

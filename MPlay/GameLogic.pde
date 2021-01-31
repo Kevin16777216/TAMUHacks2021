@@ -24,8 +24,12 @@ public class GameHandler {
         return new Instructions();
       case 4:
         return new LevelEditor();
+      //Host a game!
       case 5:
-        
+        return new WaitingScreen();
+      //Run a game!
+      case 6:
+        return new WaitingClientScreen();
       default:
         break;
     }

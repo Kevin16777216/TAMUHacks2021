@@ -31,9 +31,9 @@ public class Scene_Main_Menu extends Scene{
     renderMap.add(Curtain);
     SelectionButton Lobby = new SelectionButton(64,200,400,200);
     Lobby.setButtonSprite("Assets/main_menu.jpg");
-    Lobby.setAction(1);
+    Lobby.setAction(5);
     SelectionButton Client = new SelectionButton(64,500,400,200);
-    Client.setAction(2);
+    Client.setAction(6);
     Client.setButtonSprite("Assets/load_level.jpg");
     SelectionButton Instructions = new SelectionButton(64,800,400,200);
     Instructions.setButtonSprite("Assets/instructions.jpg");
@@ -70,6 +70,10 @@ public class Scene_Main_Menu extends Scene{
       //Main Menu->Level Editor
       case 4:
         return 4;
+      case 5:
+        return 5;
+      case 6:
+        return 5;
       default:
         return -1;
     }
@@ -121,6 +125,7 @@ public class WaitingScreen extends Scene {
   Screen image;
   GameLayer Background;
   GameLayer UI;
+  String ip;
   public WaitingScreen() {
     image = new Screen(this);
     //image.chooseImage("Assets/waiting.jpg");
@@ -129,9 +134,62 @@ public class WaitingScreen extends Scene {
     renderMap.add(Background);
     renderMap.add(UI);
     UI.addDirect(new WaitingAnimation());
-    
+    String[] ip = loadStrings("http://" + "icanhazip.com/");
+    network = new Networker(true,ip[0]); 
   }
-  
+  int update(){
+    if(network.connected == true){
+      return 2;
+    }
+    return super.update();
+  }
+  void render(){
+    super.render();
+    fill(255);
+    text(network.publicIP,0,0,700,100);
+  }
+   int handleStatus(int status){
+    switch(status){
+      case 1:
+        //
+      case 2:
+        //
+      case 3:
+        //
+      case 4:
+        //
+      default:
+        return -1;
+    }
+  }
+}
+public class WaitingClientScreen extends Scene {
+  Screen image;
+  GameLayer Background;
+  GameLayer UI;
+  String ip;
+  public WaitingClientScreen() {
+    image = new Screen(this);
+    //image.chooseImage("Assets/waiting.jpg");
+    Background = new GameLayer(this);
+    UI = new GameLayer(this);
+    renderMap.add(Background);
+    renderMap.add(UI);
+    UI.addDirect(new WaitingAnimation());
+    network = new Networker(false,"71.183.227.220"); 
+  }
+  int update(){
+    if(network.connected == true){
+      return 2;
+    }
+    return super.update();
+  }
+  void render(){
+    super.render();
+    fill(255);
+    text("Connecting...",0,0,700,100);
+    ///super.render();
+  }
    int handleStatus(int status){
     switch(status){
       case 1:

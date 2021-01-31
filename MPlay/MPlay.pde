@@ -9,7 +9,7 @@ SpriteLoader SpriteLoader;
 
 void setup() {
   size(1920,1080);
-  frameRate(24000);
+  frameRate(60);
   SpriteLoader = new SpriteLoader();
   handle = new GameHandler();
   mono = createFont("Moon Light.otf", 32);
@@ -18,7 +18,7 @@ void setup() {
 
 void draw() {
   long current = System.nanoTime();
-  println("FPS: " +(int)(1E9/(current-previous)));
+  //println("FPS: " +(int)(1E9/(current-previous)));
   previous = current;
   handle.update();
   handle.render();
