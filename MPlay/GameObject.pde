@@ -37,7 +37,9 @@ public class GameObject {
     if (tags.contains(t)){
       tags.remove(t);
     }
-    sc.objectMap.get(t).remove(this);
+    if(sc!= null&&sc.objectMap.containsKey(t)){
+      sc.objectMap.get(t).remove(this);
+    }
   }
    int update(){
     int status = 0;

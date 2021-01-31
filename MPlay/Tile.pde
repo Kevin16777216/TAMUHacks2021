@@ -17,11 +17,12 @@ public class Tile extends GameObject implements Physical{
     subtiles = new Tile[5];
     setupTag();
   }
-  public Tile(int x, int y,int w,int h,int id,int uid,String tag){
+  public Tile(int x, int y,int w,int h,int id,int uid,String tg){
     this(x,y,id,uid);
     this.w=w;
     this.h=h;
-    tags.add(StrToTag(tag));
+    tags.remove(tag.BLACK);
+    tags.add(StrToTag(tg));
   }
   public tag StrToTag(String s){
     switch(s){
@@ -55,7 +56,10 @@ public class Tile extends GameObject implements Physical{
   public void setSubtile(Tile t,int layer){
     if(layer == 1){
       subtiles[layer] = t;
-      removeTag(getBaseTag());
+ 
+      if(t.tags.contains(tag.BLACK))t.removeTag(tag.BLACK);
+      if(getBaseTag()!=tag.TILE)removeTag(getBaseTag());
+      if(tags.contains(tag.LINKTILE))removeTag(tag.LINKTILE);
       switch(t.id){
         case 8:
           tags.add(tag.SPAWN);
@@ -65,17 +69,24 @@ public class Tile extends GameObject implements Physical{
           break;
         case 10:
           tags.add(tag.DOOR);
+          tags.add(tag.LINKTILE);
           break;
         case 11:
           tags.add(tag.PLATE);
+          tags.add(tag.LINKTILE);
           break;
       }
-      sc.refreshTags((GameObject)this);
+      if(sc != null){
+        sc.refreshTags((GameObject)this);
+      }
       return;
     }
     if(layer == 2){
       if(!(tags.contains(tag.TELEPORT) || tags.contains(tag.DOOR) || tags.contains(tag.PLATE)))return;
       sc.refreshTags((GameObject)this);
+      if(subtiles[1] != null){
+        subtiles[1].removeTag(subtiles[1].getColorTag());
+      }
       removeTag(getColorTag());
       switch(t.id){
         case 3:
@@ -100,7 +111,7 @@ public class Tile extends GameObject implements Physical{
       }
       if(subtiles[1]!=null){
         subtiles[1].link = link;
-        //subtiles[1].tags.add(getColorTag());
+        subtiles[1].tags.add(getColorTag());
       }
       sc.refreshTags((GameObject)this);
     }
@@ -290,7 +301,12 @@ public class Tile extends GameObject implements Physical{
     String out="{";
     if(subtiles[1]!=null){
       out+=x+","+y+","+id+","+uid+","+w+","+h+","+getColorTag()+",";
-      out+=subtiles[1].toString();
+      if(tags.contains(tag.LINKTILE)){
+        LinkedTile Dupe = (LinkedTile)subtiles[1];
+        out+=Dupe.toString();
+      }else{
+        out+=subtiles[1].toString();
+      }
     }else{
       out+=x+","+y+","+id+","+uid+","+w+","+h+","+getColorTag()+","+"{}";
     }
@@ -301,6 +317,7 @@ public class Tile extends GameObject implements Physical{
 public class LinkedTile extends Tile{
   int linkedTile_1_uid = -1;
   int linkedTile_2_uid = -1;
+  int people_required = 1;
   //Does this tile react to other tiles, or send a signal to a tile?
   boolean reciever = false;
   boolean activated = false;
@@ -317,17 +334,41 @@ public class LinkedTile extends Tile{
     this(x,y,id,uid,false);
   }
   public void findLink(){
-    switch(id){
-      case 2:
-        HashSet<GameObject> pairs = sc.getObj(getColorTag());
-        if(pairs != null){
-          for(GameObject i:pairs){
-            if(linkedTile_1_uid == -1 && ((Tile)i).uid!=uid && ((Tile)i).id == id){
-              linkedTile_1_uid =((Tile)i).uid;
+    HashSet<GameObject> pairs = sc.getObj(getColorTag());
+    if(pairs != null){
+      switch(id){
+        case 2:
+          if(pairs != null){
+            for(GameObject i:pairs){
+              if(linkedTile_1_uid == -1 && ((Tile)i).uid!=uid && ((Tile)i).id == id){
+                linkedTile_1_uid =((Tile)i).uid;
+              }
             }
           }
-        }
-        break;
+          break;
+         case 10:
+           reciever = true;
+           activated = false;
+           for(GameObject i:pairs){
+             print(((Tile)i).getBaseTag());
+             if(linkedTile_1_uid == -1 && ((Tile)i).getBaseTag() == tag.PLATE){
+               linkedTile_1_uid =((Tile)i).uid;
+             }else if(linkedTile_2_uid == -1 && ((Tile)i).getBaseTag() == tag.PLATE){
+               linkedTile_2_uid =((Tile)i).uid;
+             }
+           }
+           break;
+          case 11:
+           reciever = false;
+           activated = false;
+           for(GameObject i:pairs){
+             if(linkedTile_1_uid == -1 && (((Tile)i).getBaseTag() == tag.DOOR)){//The door
+               linkedTile_1_uid =((Tile)i).uid;
+               break;
+             }
+           }
+          break;  
+      }
     }
   }
   public void sendSignal(){

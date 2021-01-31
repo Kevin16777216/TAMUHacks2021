@@ -2,25 +2,30 @@ public class LevelLoader extends Scene{
   GameLayer TileLayer;//Background
   GameLayer PlayerLayer;
   GameLayer UI;
+  Player p;
+  HashMap<Integer,GameObject> ObjSystem;
   public LevelLoader(String input){
+    ObjSystem = new HashMap<Integer,GameObject>();
     TileLayer = new GameLayer(this);
     PlayerLayer = new GameLayer(this);
     UI = new GameLayer(this);
     renderMap.add(TileLayer);
     renderMap.add(PlayerLayer);
     renderMap.add(UI);
+    Tile add;
     String[] lines = loadStrings(input);
     for (int i = 0 ; i < lines.length; i++) {
-      parseLine(lines[i]);
+      add = parseLine(lines[i]);
+      if(add != null){
+        TileLayer.addDirect(add);
+      }
     }
   }
   //fix
-  public void parseLine(String line){
-    if(line.length()<3)return;
+  public Tile parseLine(String line){
+    if(line.length()<3)return null;
     line = line.substring(1,line.length()-1);
-    println(line);
     String[]data = line.split(",");
-    //println(data[0]);
     boolean link =data[0].equals("LINKED");
     int start = link?1:0;
     int x =int(data[start]);
@@ -29,10 +34,11 @@ public class LevelLoader extends Scene{
     int uid =int(data[start+3]);
     int w =int(data[start+4]);
     int h =int(data[start+5]);
-    String tag = data[start+6];
+    String tg = data[start+6];
     boolean showColor=false;
     boolean reciever=false;
     boolean activated=false;
+    
     if(link){
       if(data[start+9].equals("true")){
         showColor=true;
@@ -47,28 +53,84 @@ public class LevelLoader extends Scene{
     if(id == 2||id==10||id==11){
       //get extra
       LinkedTile newTile = new LinkedTile(x,y,id,uid, showColor);
-      
-      TileLayer.addDirect(newTile);
+      newTile.w=w;
+      newTile.h=h;
+      newTile.tags.remove(tag.BLACK);
+      newTile.tags.add(newTile.StrToTag(tg));
+      tag c =newTile.getColorTag();
+      switch(c){
+        case RED:
+          newTile.link = color(255,0,0);
+          break;
+        case GREEN:
+          newTile.link = color(0,255,0);
+          break;
+        case BLUE:
+          newTile.link = color(0,0,255);
+          break;
+        case YELLOW:
+          newTile.link = color(255,255,0);
+          break;
+        default:
+          newTile.link = color(0,0,0);
+      }
+      return newTile;
     }else{
-      //print(tag);
-      Tile newTile = new Tile(x,y,w,h,id,uid,tag);
+      Tile subTile = null;
+      if(!data[start+7].equals("{}")){
+        String next = data[start+7]+",";
+        for(int i = start+8;i<data.length-1;i++){
+          next+=data[i]+",";
+        }
+        next+=data[data.length-1];
+        subTile = parseLine(next);
+      }
+      Tile newTile = new Tile(x,y,w,h,id,uid,tg);
+      ObjSystem.put(uid,newTile);
+      if(subTile!=null){
+        newTile.setSubtile(subTile,1);
+      }
+      //newTile.subtiles[1]=subTile;
       if(id == 8){
-        //Make a new Player Object
+        Player p = new Player(new Hitbox(1920/2-24,1080/2-24,48,48));
+        TileLayer.dragLayer(new PVector(-x+(1920/2-24),-y+(1080/2-24)));
+        TileLayer.setTranslation();
+        PlayerLayer.addDirect(p);
+        this.p = p;
       }else{
         
       }
-      TileLayer.addDirect(newTile);
+      return newTile;
     }
+  }
+  public HashSet<GameObject> getSolid(){
+    HashSet<GameObject> solids = getObj(tag.SOLID);
+    return solids;
+  }
+  public Player getPlayer(){
+    HashSet<GameObject> player = getObj(tag.PLAYER);
+    if(player != null){
+      for(GameObject i:player){
+        return (Player)i;
+      }
+    }
+    return null;
+  }
+  public GameObject getUID(int uid){
+    return ObjSystem.get(uid);
   }
   @Override
   int update(){
     clear();
+    int next = super.update();
+    //TileLayer.dragLayer(PVector.mult(getPlayer().velocity,-1));
+    //TileLayer.setTranslation();
     return super.update();
   }
   protected int handleStatus(int status){
     switch(status){
       //Exit Game->Main Menu
-      case 5:
+      case 3:
         return 1;
       default:
         return -1;

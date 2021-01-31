@@ -109,7 +109,7 @@ public class EditorWindow extends UI{
           brushX=brushX-Math.floorMod(brushX,64);
           brushY=brushY-Math.floorMod(brushY,64);
           Tile newTile;
-          if(brush.id == 2){
+          if(brush.id == 2 || brush.id == 10 || brush.id == 11){
             newTile = new LinkedTile(brushX,brushY,brush.id,tileCounter);
           }else{
             newTile = new Tile(brushX,brushY,brush.id,tileCounter);
@@ -224,11 +224,16 @@ public class EditorWindow extends UI{
     HashSet<GameObject> tiles = sc.getObj(tag.LINKTILE);
     if(tiles !=null){
       for(GameObject i:tiles){
-        ((LinkedTile)i).findLink();
+          if(i instanceof LinkedTile){
+           ((LinkedTile)i).findLink();
+          }else{
+           ((LinkedTile)((Tile)i).subtiles[1]).findLink();
+          }
       }
     }
     tiles = this.sc.getObj(tag.TILE);
     String output = "";
+    println(tiles);
     if(tiles== null)return;
     for(GameObject i:tiles){
       output+=(i.toString()+"\n");
