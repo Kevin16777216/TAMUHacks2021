@@ -28,14 +28,17 @@ public class Scene_Main_Menu extends Scene{
     renderMap.add(Background);
     renderMap.add(UI);
     SelectionButton Lobby = new SelectionButton(1920/2-700/2,200);
-    Lobby.setButtonSprite("Assets/instructions_resized.jpg",1920/2-700/2,200);
+    Lobby.setButtonSprite("Assets/main_menu.jpg",700,150);
     Lobby.setAction(1);
     SelectionButton Client = new SelectionButton(1920/2-700/2,500);
     Client.setAction(2);
-    //SelectionButton Instructions = new SelectionButton(1920/2-700/2,800);
-    SelectionButton Instructions = new SelectionButton(1920/2,100);
+    Client.setButtonSprite("Assets/load_level.jpg",700,150);
+    SelectionButton Instructions = new SelectionButton(1920/2-700/2,800);
+    //SelectionButton Instructions = new SelectionButton(1920/2,100);
+    Instructions.setButtonSprite("Assets/instructions.jpg",700,150);
     Instructions.setAction(3);
     SelectionButton EditLevel = new SelectionButton(1920-400,1080-150);
+    EditLevel.setButtonSprite("Assets/create_level.jpg",700,150);
     Lobby.toggleUse();
     Client.toggleUse();
     Instructions.toggleUse();
@@ -82,6 +85,7 @@ public class Instructions extends Scene{
     renderMap.add(Background);
     renderMap.add(UI);
     SelectionButton Lobby = new SelectionButton(1920/2-700/2,200);
+    Lobby.setButtonSprite("Assets/back_to_menu.jpg",700,150);
     Lobby.setAction(1);
     UI.addDirect(Lobby);
     
