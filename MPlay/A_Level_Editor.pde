@@ -63,8 +63,8 @@ public class EditorWindow extends UI{
     Modifiers = new Palette[5];
     //Solid Tiles
     Modifiers[0] = new Palette(this,48,940,0,3);
-    //Sub Tiles(Doors, Pressure Plates, Signs);
-    Modifiers[1] = new Palette(this,448,940,1,3);
+    //Sub Tiles(Start,Stop,Doors, Pressure Plates, Signs);
+    Modifiers[1] = new Palette(this,448,940,1,5);
     //Color Editor
     Modifiers[2] = new Palette(this,848,940,2,5);
     layer.addDirect(Modifiers);
@@ -128,6 +128,8 @@ public class EditorWindow extends UI{
               if(currentModifier!=0){
                 if(col.get(brushY).subtiles[currentModifier] == null || col.get(brushY).subtiles[currentModifier].id != newTile.id){
                   HashSet<GameObject> list;
+                  tag new_color;
+                  int tileid,counter;
                   switch(newTile.id){
                     case 8:
                       list = sc.getObj(tag.SPAWN);
@@ -148,15 +150,24 @@ public class EditorWindow extends UI{
                       }
                       break;
                     default:
-                      tag old_id = col.get(brushY).getBaseTag();
-                      tag new_color = newTile.getColorTag();
+                      new_color = newTile.getColorTag();
+                      tileid = col.get(brushY).id;
+                      int threshold = 2;
                       if(new_color != tag.BLACK){
                         HashSet<GameObject> pairs = sc.getObj(new_color);
-                        if(pairs != null && pairs.size() > 1){
+                        if(pairs != null && pairs.size() >= 0){
                           for(GameObject tile:pairs){
-                            if(((Tile)tile).id == col.get(brushY).id){
-                              canAdd=false;
+                            if(((Tile)tile).getBaseTag() == col.get(brushY).getBaseTag()){
+                              if(col.get(brushY).getBaseTag() == tag.DOOR){
+                                canAdd = false;
+                              }
+                              threshold--;
+                              if(threshold == 0){
+                                canAdd=false;
+                                break;
+                              }
                             }
+                            
                           }
                         }
                       }

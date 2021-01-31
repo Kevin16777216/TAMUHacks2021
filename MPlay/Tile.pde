@@ -46,21 +46,31 @@ public class Tile extends GameObject implements Physical{
   }
   public tag getBaseTag(){
     if(tags.contains(tag.TELEPORT))return tag.TELEPORT;
+    if(tags.contains(tag.PLATE))return tag.PLATE;
+    if(tags.contains(tag.DOOR))return tag.DOOR;
+    if(tags.contains(tag.SPAWN))return tag.SPAWN;
+    if(tags.contains(tag.END))return tag.END;
     return tag.TILE;
   }
   public void setSubtile(Tile t,int layer){
     if(layer == 1){
       subtiles[layer] = t;
+      removeTag(getBaseTag());
       switch(t.id){
         case 8:
           tags.add(tag.SPAWN);
-          sc.refreshTags((GameObject)this);
           break;
         case 9:
           tags.add(tag.END);
-          sc.refreshTags((GameObject)this);
-        break;
+          break;
+        case 10:
+          tags.add(tag.DOOR);
+          break;
+        case 11:
+          tags.add(tag.PLATE);
+          break;
       }
+      sc.refreshTags((GameObject)this);
       return;
     }
     if(layer == 2){
@@ -87,6 +97,10 @@ public class Tile extends GameObject implements Physical{
         default:
           link = color(0,0,0);
           tags.add(tag.BLACK);
+      }
+      if(subtiles[1]!=null){
+        subtiles[1].link = link;
+        //subtiles[1].tags.add(getColorTag());
       }
       sc.refreshTags((GameObject)this);
     }
@@ -124,10 +138,14 @@ public class Tile extends GameObject implements Physical{
       break;
       case 8:
         tags.add(tag.SPAWN);
+        break;
       case 9:
         tags.add(tag.END);
-      break;
+        break;
       case 10:
+        tags.add(tag.DOOR);
+        break;
+      case 11:
         tags.add(tag.DOOR);
         break;
       default:
@@ -211,7 +229,18 @@ public class Tile extends GameObject implements Physical{
          fill(0,255,255,183);
          strokeWeight(3);
          stroke(0,0,0);
-         rect(x,y,w,h);
+         fill(255,255,0,183);
+         beginShape();
+         vertex(x+w/2,y);
+         vertex(x+.66*w,y+.33*h);
+         vertex(x+w,y+h/2);
+         vertex(x+.66*w,y+.66*h);
+         vertex(x+w/2,y+h);
+         vertex(x+.33*w,y+.66*h);
+         vertex(x,y+h/2);
+         vertex(x+w*.33,y+h*.33);
+         vertex(x+w/2,y);
+         endShape();
           break;
        //End of Game
        case 9:
@@ -227,20 +256,27 @@ public class Tile extends GameObject implements Physical{
          fill(255);
          strokeWeight(3);
          rect(x,y,w,h);
-         fill(link);
-         stroke(link);
+         fill(0);
+         stroke(0);
          rect(x+w/8,y+h/2,w*.75,h/2.5);
          noFill();
          strokeWeight(8);
          circle(x+w/2,y+h/2.7,h/2);
+         fill(link,133);
+         strokeWeight(3);
+         stroke(link);
+         rect(x-3,y-3,w+6,h+6);
          break;
        //Pressure Plate
        case 11:
+         fill(link,133);
+         strokeWeight(8);
+         stroke(0);
+         rect(x,y,w,h);
          break;
        default:
          break;
       }
-      
       if(subtiles[1]!=null){
         subtiles[1].render();
       }
