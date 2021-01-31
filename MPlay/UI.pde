@@ -78,14 +78,6 @@ public class Button extends UI{
     button_img_y_offset = y_loc;
   }
   
-  void setButtonSprite(String img_name, int x_loc, int y_loc, int x_size, int y_size){
-    button_sprite = loadImage(img_name);
-    button_img_x_offset = x_loc;
-    button_img_y_offset = y_loc;
-    button_x = x_size;
-    button_y = y_size;
-  }
-  
   int update(){
     int status = 0;
     isHover = box.isHit(new PVector(mouseX,mouseY));
