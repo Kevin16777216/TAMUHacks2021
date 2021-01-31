@@ -176,16 +176,20 @@ public class LevelLoader extends Scene{
     return null;
   }
   public void renderOther(){
-    rect(otherx,othery,64,64);
+    rect(-otherx,-othery,64,64);
+    println(otherx+","+othery);
   }
   public void getOtherPlayerData(){
     if(network!=null){
-      String out = TileLayer.translation.x+","+TileLayer.translation.y;
-      network.writeData(out+"\t");
+      if(millis()%100==0){
+        String out = TileLayer.translation.x+","+TileLayer.translation.y;
+        network.writeData(out+"\t");
+      }
       String newPos = null;
-      while(input == null){
+      while(newPos == null){
         newPos = network.getRawData();
       }
+      println("|",newPos+"|");
       String[]meta;
       meta = newPos.split(",");
       otherx = int(meta[0]);
@@ -197,6 +201,7 @@ public class LevelLoader extends Scene{
   int update(){
     clear();
     int next = super.update();
+    getOtherPlayerData();
     //TileLayer.dragLayer(PVector.mult(getPlayer().velocity,-1));
     //TileLayer.setTranslation();
     return super.update();
