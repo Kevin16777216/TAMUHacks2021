@@ -1,6 +1,7 @@
 GameHandler handle;
 KeyListener keys = new KeyListener();
 long previous = System.nanoTime();
+PFont mono;
 double lag = 0.0;
 HashMap<Integer,key> input = new HashMap<Integer,key>();
 Networker network = null;
@@ -11,11 +12,13 @@ void setup() {
   frameRate(24000);
   SpriteLoader = new SpriteLoader();
   handle = new GameHandler();
+  mono = createFont("Moon Light.otf", 32);
+  textFont(mono);
 }
 
 void draw() {
   long current = System.nanoTime();
-  println("FPS: " +(int)(1E9/(current-previous)));
+  //println("FPS: " +(int)(1E9/(current-previous)));
   previous = current;
   handle.update();
   handle.render();

@@ -118,8 +118,22 @@ public class Player extends Entity{
         }
       }
     }
-    if(teleportTime >0)teleportTime--;
-    if(teleportTime ==0)justTeleport = false;
+    
+  }
+  public void checkNearestSign(){
+    HashSet<GameObject> signs = sc.getObj(tag.SIGN);
+    if(signs!=null){
+      Hitbox testbox = new Hitbox(PVector.add(box.TR.copy(),PVector.mult(level.TileLayer.translation,-1)),box.Dimensions.copy());
+      for(GameObject i:signs){
+        if(testbox.isHit(((Physical)i).getHitbox()) && keys.isPressed('e') && !justTeleport){
+          print("swap");
+          (((Tile)i).subtiles[1]).toggle=!(((Tile)i).subtiles[1]).toggle;
+          teleportTime=100;
+          justTeleport =true;
+        }
+      }
+    }
+    
   }
   int update(){
     applyInput();
@@ -129,6 +143,9 @@ public class Player extends Entity{
     //println("Time Remaining: " + timeLeft/1000 + " seconds");
  //   if(checkLava())return 1;
     checkTeleporters();
+    checkNearestSign();
+    if(teleportTime >0)teleportTime--;
+    if(teleportTime ==0)justTeleport = false;
     if(checkExit()){
       print("done");
       return 3;

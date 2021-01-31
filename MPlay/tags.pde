@@ -12,6 +12,8 @@ public static enum tag{
   DOOR,
   PLATE,
   SPAWN,
+  PUZZLE,
+  SIGN,
   END,
   BLACK,
   RED,

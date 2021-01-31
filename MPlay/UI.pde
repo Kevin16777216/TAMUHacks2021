@@ -1,9 +1,29 @@
 public class Polygon extends GameObject{
-  public Polygon(Scene sc,GameLayer layer){
-    super(sc,layer);
+    PVector[]sign={new PVector(30,30)
+  ,new PVector(1890,30)
+,new PVector(1890,420)
+    ,new PVector(880,420)
+    ,new PVector(860,540)
+  ,new PVector(840,420)
+,new PVector(30,420)
+,new PVector(30,30)};
+String shape;
+String text="test";
+boolean show=false;
+Drawer draw;
+  public Polygon(String shape){
+    this.shape=shape;
+    draw = new Drawer();
+  }
+  void setText(String text){
+    this.text= text;
   }
   void render(){
-    
+    if(shape.equals("Sign") && show){
+      draw.DrawDottedPoly(sign,.5,8,300,8,true,true,color(135,205,255),color(255));
+      fill(0);
+      text(text,45,45,1840,390);
+    }
   }
   int update(){
     int status = 0;
@@ -316,6 +336,7 @@ public class Drawer{
   float LineLength(float x1, float y1, float x2, float y2){
     return sqrt(pow((x1-x2),2) +pow((y1-y2),2));
   }
+
   void DrawDottedPoly(PVector[] Coords, float frac, int segments, int frames,int pressure,boolean animated,boolean fill,color StrokeColor,color FillColor){
     //frac:The faction of the line to be filled in
     //segements:The number of dotted lines

@@ -3,9 +3,12 @@ public class Tile extends GameObject implements Physical{
   Tile[] subtiles;
   Hitbox box;
   String loadMode = "EDITOR";
+  String[]texts = {"A","B","Bee Movie Script  Dialogue Transcript According to all known laws of aviation, there is no way a beeshould be able to fly.  Its wings are too small to get its fat little body off the ground.","D"};
   PImage data;
   int transparency = 255;
   color link = color(0,0,0);
+  Polygon decoration;
+  boolean toggle = false;//I'm so tired, this is bad code but hey it works and that's all that matters.
   public Tile(int x, int y, int id,int uid) {
     this.x = x;
     this.y = y;
@@ -76,6 +79,12 @@ public class Tile extends GameObject implements Physical{
         case 11:
           tags.add(tag.PLATE);
           tags.add(tag.LINKTILE);
+          break;
+        case 15:
+        case 14:
+        case 13:
+        case 12:
+          tags.add(tag.SIGN);
           break;
       }
       if(sc != null){
@@ -162,6 +171,12 @@ public class Tile extends GameObject implements Physical{
       case 11:
         tags.add(tag.PLATE);
         break;
+      case 13:
+      case 14:
+      case 15:
+      case 12:
+        tags.add(tag.SIGN);
+        break;
       default:
         break;
     }
@@ -179,8 +194,6 @@ public class Tile extends GameObject implements Physical{
   public void setW(int w){this.w = w;}
   public void setH(int h){this.h = h;}
   void render() {
-    //Choosing load size based on if the game is in the editor or not.
-    if(loadMode.equals("EDITOR")){
       switch(id){
         //Ground
         case 0:
@@ -287,7 +300,43 @@ public class Tile extends GameObject implements Physical{
          strokeWeight(8);
          stroke(0);
          rect(x,y,w,h);
+         rect(x+w/4,y+h/4,w/2,h/2);
          break;
+       //Sign
+       case 13:
+       case 14:
+       case 15:
+       case 12:
+         int number = id-11;
+         fill(255, 121, 25);
+         strokeWeight(3);
+         stroke(0,0,0);
+         beginShape();
+         vertex(x,y);
+         vertex(x+w,y);
+         vertex(x+w,y+h*.66);
+         vertex(x+w*.6,y+h*.66);
+         vertex(x+w*.6,y+h);
+         vertex(x+w*.3,y+h);
+         vertex(x+w*.3,y+h*.66);
+         vertex(x,y+h*.66);
+         vertex(x,y);
+         endShape();
+         fill(255);
+         text(str(number),x+w/3,y,48,48);
+         //if(toggle){
+           //if(layer!=null){
+             if(decoration != null){
+               decoration.show=toggle;
+               decoration.sign[4].x = box.TR.x+w/2+layer.translation.x;
+               decoration.sign[4].y = box.TR.y+h/4+layer.translation.y;
+               fill(0);
+               decoration.text=texts[number];
+               //text(texts[number],x,y,1920-60,420);
+               //decoration.render();
+             }
+           //}
+         //}
        default:
          break;
       }
@@ -297,11 +346,11 @@ public class Tile extends GameObject implements Physical{
           subtiles[1].render();
         }
       }
-    }else if(loadMode.equals("GAME")){
     
-    }
   }
-  int update() {return 0;}
+  int update() {
+    return 0;
+  }
   @Override
   public String toString(){
     String out="{";

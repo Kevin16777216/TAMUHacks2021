@@ -64,7 +64,7 @@ public class EditorWindow extends UI{
     //Solid Tiles
     Modifiers[0] = new Palette(this,48,940,0,3);
     //Sub Tiles(Start,Stop,Doors, Pressure Plates, Signs);
-    Modifiers[1] = new Palette(this,448,940,1,5);
+    Modifiers[1] = new Palette(this,448,940,1,10);
     //Color Editor
     Modifiers[2] = new Palette(this,848,940,2,5);
     layer.addDirect(Modifiers);
