@@ -53,6 +53,8 @@ public class Button extends UI{
   //Button Image Margins
   protected int button_img_x_offset;
   protected int button_img_y_offset;
+  protected int button_x;
+  protected int button_y;
   protected int default_action = 0;
   public Button(int x, int y, int w, int h){
     this(new Hitbox(new PVector(x,y),new PVector(w,h)));
@@ -74,6 +76,14 @@ public class Button extends UI{
     button_sprite = loadImage(img_name);
     button_img_x_offset = x_loc;
     button_img_y_offset = y_loc;
+  }
+  
+  void setButtonSprite(String img_name, int x_loc, int y_loc, int x_size, int y_size){
+    button_sprite = loadImage(img_name);
+    button_img_x_offset = x_loc;
+    button_img_y_offset = y_loc;
+    button_x = x_size;
+    button_y = y_size;
   }
   
   int update(){
@@ -192,6 +202,112 @@ public class Curtain extends UI{
     noStroke();
     fill(255,255,255,life);
     rect(0,0,width,height);
+  }
+}
+
+public class menuCurtain extends UI{
+  float a = 0.0;
+  float inc = TWO_PI/25.0;
+  float prev_x = 0, prev_y = -40, x, y;
+  float starty=-40, startyBack = 1120;
+  boolean check;
+  
+  //public menuCurtain(boolean check){
+  //  this.check=check;
+  //}
+  
+  void setBackground(){
+    if(starty==-40){
+      background(201,241,255);
+    }
+  }
+  
+  int update(){
+    //1076,1067
+    if(starty >= 1076.0){
+      
+      HashSet<GameObject> UI = sc.getObj(tag.UI);
+      for(GameObject i:UI){
+        if(i instanceof UI){
+          ((UI)i).activated=true;
+        }     
+      }
+      layer.removeDirect(this);
+      //check=true;
+    }
+    return 0;
+  }
+  
+  void CurtainLine(){
+    background(201,241,255);
+    //println(starty);
+    //draws individual line across screen using sin wave
+    for(int i=0; i<1920; i=i+4) {
+      x = i;
+      y = starty + 0.4*sin(a) * 40.0;
+      line(prev_x, prev_y, x, y);
+      prev_x = x;
+      prev_y = y;
+      a = a + inc;
+      if(a%TWO_PI>(PI/2) && a%TWO_PI<(3*PI/2)){
+        stroke(233, 88, 88);
+      }
+      else{
+        stroke(255, 112, 112);
+      }
+    }
+  }
+  //irrelevent
+  void render(){
+    
+    if(starty<1080.0){
+      //draws sets of lines
+      for(int i=0;i<10;i++){
+        CurtainLine();
+        a=0.0;
+        prev_x=0;
+        starty+=3;
+        prev_y += 3;
+        
+      }
+    }
+    //else{
+    //  background(201,241,255);
+    //  fill(0);
+    //  textSize(50);
+    //  textAlign(CENTER);
+    //  text("Main Menu", 640, 360);
+    //}
+  }
+}
+
+public class WaitingAnimation extends UI{
+  float t;
+  
+  float r(float theta, float a, float b, float m, float n1, float n2, float n3){
+  return pow(pow(abs(cos(m * theta / 4.0) / a), n2) + pow(abs(sin(m * theta / 4.0) / b), n3), -1.0 / n1);
+  }
+  
+  
+  void render(){
+    noFill();
+    stroke(255);
+    strokeWeight(2);
+    translate(width/2, height/2+50);
+    background(0);
+    //creates shape each frame
+    beginShape();
+    for(float theta = 0; theta < 2*PI; theta += 0.01){
+      //float rad = r(theta,mouseX/100.0,mouseY/100.0,8,1,1,1);
+      float rad = r(theta,2,2,10,1,sin(t) * 0.5 +0.5, cos(t) * 0.5 +0.5);
+      float x = rad * cos(theta)*50;
+      float y = rad * sin(theta)*50;
+      vertex(x,y);
+    }
+    
+    endShape();
+    //use t for non mouse inputs
+    t+=0.1;
   }
 }
 //Class for those Fancy effects

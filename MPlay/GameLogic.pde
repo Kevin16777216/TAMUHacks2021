@@ -20,6 +20,8 @@ public class GameHandler {
       case 2:
         return new LevelLoader("Level.txt");
       case 3:
+        //return new WaitingScreen();
+        return new Instructions();
       case 4:
         return new LevelEditor();
       case 5:
