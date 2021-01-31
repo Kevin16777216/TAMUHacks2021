@@ -7,11 +7,21 @@ public class LevelLoader extends Scene{
   PVector origin;
   HashMap<Integer,GameObject> ObjSystem;
   public LevelLoader(String input){
+    String[] lines = new String[]{};
     if(network!=null){
       if(network.isServer){
-        network.writeData("LEVEL"+input);
+        lines = loadStrings(input);
+        String out = "";
+        for(int i=0;i<lines.length;i++){
+          out+=lines[i]+"\n";
+        }
+        network.writeData(out+"\t");
       }else{
-        input = network.getRawData();
+        input = null;
+        while(input == null){
+          input = network.getRawData();
+        }
+        //println(input);
       }
     }
     ObjSystem = new HashMap<Integer,GameObject>();
@@ -24,7 +34,7 @@ public class LevelLoader extends Scene{
     Sign = new Polygon("Sign");
     UI.addDirect(Sign);
     Tile add;
-    String[] lines = loadStrings(input);
+
     for (int i = 0 ; i < lines.length; i++) {
       add = parseLine(lines[i]);
       if(add != null){
