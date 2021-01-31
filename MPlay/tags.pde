@@ -7,7 +7,17 @@ public static enum tag{
   ENEMY,
   TILE,
   SOLID,
+  LINKTILE,
   TELEPORT,
+  DOOR,
+  PLATE,
+  SPAWN,
+  END,
+  BLACK,
+  RED,
+  GREEN,
+  BLUE,
+  YELLOW,
   DEFAULT
 }
 public static enum readMode{

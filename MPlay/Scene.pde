@@ -71,10 +71,36 @@ abstract class Scene {
     }
     return out;
   }
+  public void refreshTags(GameObject tmp){
+    for(tag i: tmp.getTags()){
+        if(!objectMap.containsKey(i)){
+          objectMap.put(i,new HashSet<GameObject>());
+        }
+        objectMap.get(i).add(tmp);
+      }
+  }
   
   public HashSet<GameObject> getObj(tag tags){
     if(!objectMap.containsKey(tags))return null;
     return objectMap.get(tags);
+  }
+  public HashSet<GameObject> getObjC(tag... tags){
+    if(tags.length<1)return null;
+    HashSet<GameObject>out = getObj(tags[0]);
+    for(int i = 1;i<tags.length;i++){
+      HashSet<GameObject>tmp = getObj(tags[i]);
+      ArrayList<GameObject>tmp2 = new ArrayList<GameObject>();
+      for(GameObject obj:out){
+        if(tmp == null)return null;
+        if(!tmp.contains(obj)){
+          tmp2.add(obj);
+        }
+      }
+      for(GameObject obj:tmp2){
+        out.remove(obj);
+      }
+    }
+    return out;
   }
   public void addObj(GameObject obj) {
     tbc.add(obj);

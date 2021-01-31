@@ -2,6 +2,7 @@ public class LevelEditor extends Scene{
   GameLayer EditLayer;
   GameLayer MidUI;
   GameLayer UI;
+  EditorWindow edit;
   //Level Editor Tiles will be 64x64, Subtiles will be 48x48
   public LevelEditor(){
     EditLayer = new GameLayer(this);
@@ -12,7 +13,11 @@ public class LevelEditor extends Scene{
     renderMap.add(UI);
     MidUI.addDirect(new RectCover(0,0,1920,48,color(0)),new RectCover(0,0,48,1080,color(0)),
     new RectCover(1920-48,0,48,1080,color(0)),new RectCover(0,912,1920,1080-912,color(0)));
-    UI.addDirect(new EditorWindow(this,UI,EditLayer),new SelectionButton(1920-400,1080-150));
+    SelectionButton save = new SelectionButton(1920-400,1080-150);
+    save.setAction(5);
+    save.toggleUse();
+    edit = new EditorWindow(this,UI,EditLayer);
+    UI.addDirect(edit,save,new Curtain(10));
   }
   @Override
   int update(){
@@ -23,6 +28,7 @@ public class LevelEditor extends Scene{
     switch(status){
       //Editor->Main Menu
       case 5:
+        edit.save();
         return 1;
       default:
         return -1;
@@ -81,9 +87,9 @@ public class EditorWindow extends UI{
       case 0:
         return Modifiers[0].selection;
       case 1:
-        return Modifiers[1].selection;
+        return 8+Modifiers[1].selection;
       case 2:
-        return Modifiers[2].selection;
+        return 3+Modifiers[2].selection;
       default:
         return 0;
     }
@@ -102,30 +108,89 @@ public class EditorWindow extends UI{
           brushY=tmpY;
           brushX=brushX-Math.floorMod(brushX,64);
           brushY=brushY-Math.floorMod(brushY,64);
-          Tile newTile = new Tile(brushX,brushY,brush.id,tileCounter);
+          Tile newTile;
+          if(brush.id == 2){
+            newTile = new LinkedTile(brushX,brushY,brush.id,tileCounter);
+          }else{
+            newTile = new Tile(brushX,brushY,brush.id,tileCounter);
+          }
+          newTile.layer = map;
+          newTile.sc=this.sc;
+          newTile.x+=6*currentModifier;
+          newTile.y+=6*currentModifier;
           newTile.setH(64-12*currentModifier);
           newTile.setW(64-12*currentModifier);
           newTile.transparency =255-currentModifier*25;
+          boolean canAdd = true;
           if(Tiles.containsKey(brushX)){
             HashMap<Integer,Tile> col = Tiles.get(brushX);
             if(col.containsKey(brushY)){
-              if(col.get(brushY).getSubtile(currentModifier)!=null){
-
+              if(currentModifier!=0){
+                if(col.get(brushY).subtiles[currentModifier] == null || col.get(brushY).subtiles[currentModifier].id != newTile.id){
+                  HashSet<GameObject> list;
+                  switch(newTile.id){
+                    case 8:
+                      list = sc.getObj(tag.SPAWN);
+                      if(list != null && list.size() > 0){
+                         for(GameObject i:list){
+                           ((Tile)i).subtiles[1]= null;
+                           ((Tile)i).tags.remove(tag.SPAWN);
+                         }
+                      }
+                      break;
+                    case 9:
+                      list = sc.getObj(tag.END);
+                      if(list != null && list.size() > 0){
+                         for(GameObject i:list){
+                           ((Tile)i).subtiles[1]= null;
+                           ((Tile)i).tags.remove(tag.END);
+                         }
+                      }
+                      break;
+                    default:
+                      tag old_id = col.get(brushY).getBaseTag();
+                      tag new_color = newTile.getColorTag();
+                      if(new_color != tag.BLACK){
+                        HashSet<GameObject> pairs = sc.getObj(new_color);
+                        if(pairs != null && pairs.size() > 1){
+                          for(GameObject tile:pairs){
+                            if(((Tile)tile).id == col.get(brushY).id){
+                              canAdd=false;
+                            }
+                          }
+                        }
+                      }
+                      break;
+                  }
+                  if(canAdd){
+                      col.get(brushY).setSubtile(newTile,currentModifier);
+                  }
+               }
               }else{
-                col.get(brushY).setSubtile(newTile,currentModifier);
-                map.add(newTile);
+                Tile toRemove = col.get(brushY);
+                if(toRemove.id != newTile.id){
+                  map.removeDirect(toRemove);
+                  col.put(brushY,newTile);
+                  tileCounter++;
+                  newTile.uid=tileCounter;
+                  map.addDirect(newTile);
+                }
               }
             }else{
               if(currentModifier == 0){
                 col.put(brushY,newTile);
-                map.add(newTile);
+                tileCounter++;
+                newTile.uid=tileCounter;
+                map.addDirect(newTile);
               }
             }
           }else{
              if(currentModifier == 0){
               Tiles.put(brushX,new HashMap<Integer,Tile>());
               Tiles.get(brushX).put(brushY,newTile);
-              map.add(newTile);
+              tileCounter++;
+              newTile.uid=tileCounter;
+              map.addDirect(newTile);
              }
           }          
         }
@@ -144,6 +209,24 @@ public class EditorWindow extends UI{
     Rdown = mousePressed && mouseButton == RIGHT;
     return 0;
   }
+  public void save(){
+    HashSet<GameObject> tiles = sc.getObj(tag.LINKTILE);
+    if(tiles !=null){
+      for(GameObject i:tiles){
+        ((LinkedTile)i).findLink();
+      }
+    }
+    tiles = this.sc.getObj(tag.TILE);
+    String output = "";
+    if(tiles== null)return;
+    for(GameObject i:tiles){
+      output+=(i.toString()+"\n");
+    }
+    PrintWriter out = createWriter("Level.txt");
+    out.println(output);
+    out.flush();
+    out.close();
+  }
   public void render(){
     if(isHover){
       brush.render();
@@ -152,7 +235,6 @@ public class EditorWindow extends UI{
     borderDrawer.LineRect(windowView.TR,windowView.Dimensions,8);
   }
   boolean getHover(){return isHover=windowView.isHit(new PVector(mouseX,mouseY));}
-  
 }
 public class Palette extends GameObject{
   private int x,y;

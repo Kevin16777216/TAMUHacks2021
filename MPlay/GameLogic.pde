@@ -3,7 +3,7 @@ public static enum Status{
   GOOD,
 }
 public class GameHandler {
-  final int DEFAULT_SCENE = 0;
+  final int DEFAULT_SCENE = 1;
   int resp;
   String lvlData = "";
   Scene cScene;
@@ -14,12 +14,16 @@ public class GameHandler {
   private Scene getScene(int id) {
     switch (id) {
       case 0:
-        return new Scene_Main_Menu();
+      break;
       case 1:
+        return new Scene_Main_Menu();
       case 2:
+        return new LevelLoader("Level.txt");
       case 3:
       case 4:
         return new LevelEditor();
+      case 5:
+        
       default:
         break;
     }
@@ -34,6 +38,8 @@ public class GameHandler {
       case -1:
         cScene.exit();
         exit();
+      case 694:
+        
       default:
         //clean up other garbage
         cScene.exit();
