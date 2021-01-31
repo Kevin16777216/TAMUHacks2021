@@ -1,8 +1,18 @@
+import processing.serial.*;
 //All Scenes excluding Level Editor and Main Game Scene()
 public class Scene_Main_Menu extends Scene{
   GameLayer Background;
   GameLayer UI;
   public Scene_Main_Menu(){
+    //drops curtain
+    //menuCurtain test = new menuCurtain(false);
+    //  test.setBackground();
+    //  while(test.check==false){
+    //  test.update();
+    //  test.render();
+      
+    //}
+    //finishes dropping curtain
     Background = new GameLayer(this);
     UI = new GameLayer(this);
     renderMap.add(Background);
@@ -19,7 +29,8 @@ public class Scene_Main_Menu extends Scene{
     Instructions.toggleUse();
     EditLevel.setAction(4);
     EditLevel.toggleUse();
-    UI.addDirect(Lobby,Client,Instructions,EditLevel,new Curtain(10));
+    //UI.addDirect(Lobby,Client,Instructions,EditLevel, new Curtain(1));
+    UI.addDirect(Lobby,Client,Instructions,EditLevel, new menuCurtain());
   }
   @Override
   int update(){

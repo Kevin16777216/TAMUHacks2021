@@ -194,6 +194,81 @@ public class Curtain extends UI{
     rect(0,0,width,height);
   }
 }
+
+public class menuCurtain extends UI{
+  float a = 0.0;
+  float inc = TWO_PI/25.0;
+  float prev_x = 0, prev_y = -40, x, y;
+  float starty=-40;
+  boolean check;
+  
+  //public menuCurtain(boolean check){
+  //  this.check=check;
+  //}
+  
+  void setBackground(){
+    if(starty==-40){
+      background(201,241,255);
+    }
+  }
+  
+  int update(){
+    //1076,1067
+    if(starty >= 1076.0){
+      
+      HashSet<GameObject> UI = sc.getObj(tag.UI);
+      for(GameObject i:UI){
+        if(i instanceof UI){
+          ((UI)i).activated=true;
+        }     
+      }
+      layer.removeDirect(this);
+      //check=true;
+    }
+    return 0;
+  }
+  
+  void CurtainLine(){
+    background(201,241,255);
+    println(starty);
+    //draws individual line across screen using sin wave
+    for(int i=0; i<1920; i=i+4) {
+      x = i;
+      y = starty + 0.4*sin(a) * 40.0;
+      line(prev_x, prev_y, x, y);
+      prev_x = x;
+      prev_y = y;
+      a = a + inc;
+      if(a%TWO_PI>(PI/2) && a%TWO_PI<(3*PI/2)){
+        stroke(233, 88, 88);
+      }
+      else{
+        stroke(255, 112, 112);
+      }
+    }
+    
+  }
+  void render(){
+    
+    if(y<1080.0){
+      for(int i=0;i<6;i++){
+        CurtainLine();
+        a=0.0;
+        prev_x=0;
+        starty+=3;
+        prev_y += 3;
+        
+      }
+    }
+    //else{
+    //  background(201,241,255);
+    //  fill(0);
+    //  textSize(50);
+    //  textAlign(CENTER);
+    //  text("Main Menu", 640, 360);
+    //}
+  }
+}
 //Class for those Fancy effects
 public class Drawer{
   void LineRect(PVector a, PVector b,int strokeWeight){
