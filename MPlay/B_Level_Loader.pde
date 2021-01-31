@@ -17,9 +17,10 @@ public class LevelLoader extends Scene{
   //fix
   public void parseLine(String line){
     if(line.length()<3)return;
-    line.substring(2,line.length()-1);
+    line = line.substring(1,line.length()-1);
+    println(line);
     String[]data = line.split(",");
-    println(data[0]);
+    //println(data[0]);
     boolean link =data[0].equals("LINKED");
     int start = link?1:0;
     int x =int(data[start]);
@@ -29,11 +30,25 @@ public class LevelLoader extends Scene{
     int w =int(data[start+4]);
     int h =int(data[start+5]);
     String tag = data[start+6];
+    boolean showColor=false;
+    boolean reciever=false;
+    boolean activated=false;
+    if(link){
+      if(data[start+9].equals("true")){
+        showColor=true;
+      }
+      if(data[start+8].equals("true")){
+        reciever=true;
+      }
+      if(data[start+7].equals("true")){
+        activated=true;
+      }
+    }
     if(id == 2||id==10||id==11){
       //get extra
-      //LinkedTile newTile = new LinkedTile();
-      /////
-      //TileLayer.addDirect(newTile);
+      LinkedTile newTile = new LinkedTile(x,y,id,uid, showColor);
+      
+      TileLayer.addDirect(newTile);
     }else{
       //print(tag);
       Tile newTile = new Tile(x,y,w,h,id,uid,tag);
