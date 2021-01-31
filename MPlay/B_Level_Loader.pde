@@ -14,6 +14,7 @@ public class LevelLoader extends Scene{
       parseLine(lines[i]);
     }
   }
+  //fix
   public void parseLine(String line){
     if(line.length()<3)return;
     line.substring(1,line.length()-1);
